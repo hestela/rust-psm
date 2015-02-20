@@ -3,3 +3,7 @@
 name = "rust-psm"
 version = "0.0.1"
 authors = ["henry <henryestela@gmail.com>"]
+
+[lib]
+name = "rust-psm"
+path = "src/lib.rs"
