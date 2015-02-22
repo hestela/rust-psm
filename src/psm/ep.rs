@@ -1,5 +1,7 @@
 use psm::epid::*;
 use psm::error::*;
+use psm::consts::*;
+use std::rc::Rc;
 
 // TODO: determine more appropriate types instead of passing -1/NULL, psm.h:449
 // TODO: when rust supports conditional compilation add PSM_VERNO conditional fields
@@ -22,6 +24,7 @@ pub struct EpOpts {
 }
 
 enum PtlAddr {
+  // TODO: add ptl_epaddr type
   ptladdr_u3 ([u32; 2]), 
   ptladdr_u64 (u64),
   ptladdr_data ([u8; 0])
@@ -34,7 +37,22 @@ pub struct Epaddr {
   ep: Ep,
   // void *usr_ep_ctxt  TODO: this is a raw pointer, find what to do
   // TODO: add egrlong/data things
-  ptl_addr: PtlAddr
+  ptl_addr: PtlAddr,
+  mctxt_gihdi: [u64; IPATH_MAX_UNIT],
+  mctxt_epid: [Epid; IPATH_MAX_UNIT],
+  mctxt_epcount: usize,
+  mctxt_nsconn: usize,
+  mctxt_send_seqnum: u16,
+  mctxt_recv_seqnum: u16,
+  mctxt_current: Option<Rc<Epaddr>>,
+  // outoforder_q: Mqsq TODO: make Mqsq type
+  outoforder_c: usize,
+
+  // Linked list of Epaddr for multi-context
+  // TODO: what type of pointers? box, raw, Rc?
+  mctxt_master: Option<Rc<Epaddr>>,
+  mctxt_prev: Option<Rc<Epaddr>>,
+  mctxt_next: Option<Rc<Epaddr>>
 }
 
 

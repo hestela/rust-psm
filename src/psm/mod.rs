@@ -6,6 +6,7 @@ pub use self::ep::*;
 pub mod ep;
 pub mod error;
 pub mod epid;
+pub mod consts;
 
 pub struct Version{
   major: usize,
