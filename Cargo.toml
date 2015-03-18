@@ -2,8 +2,30 @@
 
 name = "rust-psm"
 version = "0.0.1"
-authors = ["henry <henryestela@gmail.com>"]
+authors = ["Henry Estela <henryestela@gmail.com>"]
 
 [lib]
 name = "rust-psm"
-path = "src/lib.rs"
+
+# PSM Endpoint
+[dependencies.ep]
+path = "./ep"
+
+[dependencies.error]
+path = "./error"
+
+# Packet Transport Layer - Active Messages
+[dependencies.ptl_am]
+path = "./ptl_am"
+
+# Packet Transport Layer - Interconnect Protocol Stack
+[dependencies.ptl_ips]
+path = "./ptl_ips"
+
+# Packet Transport Layer - Self (Loopback)
+[dependencies.ptl_self]
+path = "./ptl_self"
+
+# Infinipath
+[dependencies.ipath]
+path = "./ipath"
