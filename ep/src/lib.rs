@@ -66,7 +66,7 @@ pub struct Epaddr <'a> {
 impl Ep {
   // TODO: change job_key to rust uuid, add psm_ep, add new
   pub fn open<'a>(job_key: u64, ep_opts: EpOpts) -> Result<(Ep, &'a Epaddr<'a>), Error> {
-    Err(Error { error: ErrorType::PSM_ERROR_LAST, error_str: "send help"})
+    Err(Error::new(ErrorType::PSM_ERROR_LAST, "send help"))
   }
 
   pub fn close(ep: Ep, mode: isize, timeout: u64) -> Result<(), Error> {
