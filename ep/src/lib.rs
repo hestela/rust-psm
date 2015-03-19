@@ -1,13 +1,16 @@
-use psm::epid::*;
-use psm::error::*;
-use psm::consts::*;
+extern crate error;
+
+use error::{Error_type,Error};
 use std::rc::Rc;
+use self::consts::*;
+
+pub mod consts;
 
 // TODO: determine more appropriate types instead of passing -1/NULL, psm.h:449
 // TODO: when rust supports conditional compilation add PSM_VERNO conditional fields
 pub struct Ep {
   // TOOD: lots of things to add
-  epid: Epid 
+  epid: Epid
 }
 pub struct EpOpts {
   timeout: u64,
@@ -25,7 +28,7 @@ pub struct EpOpts {
 
 enum PtlAddr {
   // TODO: add ptl_epaddr type
-  ptladdr_u3 ([u32; 2]), 
+  ptladdr_u3 ([u32; 2]),
   ptladdr_u64 (u64),
   ptladdr_data ([u8; 0])
 }
@@ -74,4 +77,21 @@ impl Ep {
 
 impl Epaddr {
 
+}
+/* TODO: see if we can make this into a struct so we can real getters/setters that dont have the
+ * words get/set
+ */
+
+pub type Epid = u64;
+
+pub fn get_nid(epid: Epid) -> u64 {
+  1
+}
+
+pub fn get_context(epid: Epid) -> u64 {
+  1
+}
+
+pub fn get_port(epid: Epid) -> u64 {
+  1
 }

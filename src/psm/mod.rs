@@ -1,12 +1,9 @@
 // TODO: import rust uuid lib
-pub use self::error::*;
-pub use self::ep::*;
-//pub use self::epid::*;
+extern crate error;
+extern crate ep;
 
-pub mod ep;
-pub mod error;
-pub mod epid;
-pub mod consts;
+use self::error::*;
+use self::ep::*;
 
 pub struct Version{
   major: usize,
