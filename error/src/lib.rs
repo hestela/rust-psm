@@ -46,6 +46,10 @@ pub struct Error {
 }
 
 impl Error {
+  pub fn new(error: Error_type, error_str: &'static str)
+    -> Error { Error { error: error, error_str: error_str }
+  }
+
   pub fn error_type_to_string(self) -> &'static str {
     "NONE()"
   }

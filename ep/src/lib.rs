@@ -3,8 +3,11 @@ extern crate error;
 use error::{Error_type,Error};
 use std::rc::Rc;
 use self::consts::*;
+use self::macros::*;
 
 pub mod consts;
+#[macro_use]
+pub mod macros;
 
 // TODO: determine more appropriate types instead of passing -1/NULL, psm.h:449
 // TODO: when rust supports conditional compilation add PSM_VERNO conditional fields
@@ -33,7 +36,7 @@ enum PtlAddr {
   ptladdr_data ([u8; 0])
 }
 
-pub struct Epaddr {
+pub struct Epaddr <'a> {
   // *ptl: ptl          TODO: ptl is a reference to the parent obj
   //ptlctrl: Ptl_ctl,
   epid: Epid,
@@ -47,21 +50,23 @@ pub struct Epaddr {
   mctxt_nsconn: usize,
   mctxt_send_seqnum: u16,
   mctxt_recv_seqnum: u16,
-  mctxt_current: Option<Rc<Epaddr>>,
+  /* TODO: consider http://rustbyexample.com/enum.html to make this a linked list,
+   * depending on how the C version works.
+   */
+  mctxt_current: Option<&'a Epaddr<'a>>,
   // outoforder_q: Mqsq TODO: make Mqsq type
   outoforder_c: usize,
 
   // Linked list of Epaddr for multi-context
-  // TODO: what type of pointers? box, raw, Rc?
-  mctxt_master: Option<Rc<Epaddr>>,
-  mctxt_prev: Option<Rc<Epaddr>>,
-  mctxt_next: Option<Rc<Epaddr>>
+  mctxt_master: Option<&'a Epaddr<'a>>,
+  mctxt_prev: Option<&'a Epaddr<'a>>,
+  mctxt_next: Option<&'a Epaddr<'a>>
 }
 
 
 impl Ep {
-  // TODO: change job_key to rust uuid, add psm_ep
-  pub fn open(job_key: u64, ep_opts: EpOpts) -> Result<Box<(Ep, Epaddr)>, Error> {
+  // TODO: change job_key to rust uuid, add psm_ep, add new
+  pub fn open<'a>(job_key: u64, ep_opts: EpOpts) -> Result<(Ep, &'a Epaddr<'a>), Error> {
     Err(Error { error: Error_type::PSM_ERROR_LAST, error_str: "send help"})
   }
 
@@ -69,14 +74,13 @@ impl Ep {
     Ok(())
   }
 
-  pub fn connect(ep: Ep, epids: &Vec<Epid>, epid_masks: &Vec<isize>, timeout: i64) -> Result<Box<Vec<Epaddr>>, Box<Vec<Error>>> {
-    let dummy: Vec<Error> = Vec::new();
-    Err(Box::new(dummy))
+  pub fn connect<'a>(ep: Ep, epids: Box<Vec<Epid>>, epid_masks: &Vec<isize>, timeout: i64) -> Result<Box<Vec<&'a Epaddr<'a>>>, Box<Vec<Error>>> {
+    Err(Box::new(vec!()))
   }
 }
 
-impl Epaddr {
-
+impl <'a>Epaddr <'a> {
+  // TODO: figure out what fields are commonly used when epaddr is constructed
 }
 /* TODO: see if we can make this into a struct so we can real getters/setters that dont have the
  * words get/set
