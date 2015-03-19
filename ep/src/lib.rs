@@ -50,6 +50,9 @@ pub struct Epaddr <'a> {
   mctxt_nsconn: usize,
   mctxt_send_seqnum: u16,
   mctxt_recv_seqnum: u16,
+  /* TODO: consider http://rustbyexample.com/enum.html to make this a linked list,
+   * depending on how the C version works.
+   */
   mctxt_current: Option<&'a Epaddr<'a>>,
   // outoforder_q: Mqsq TODO: make Mqsq type
   outoforder_c: usize,
