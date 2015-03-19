@@ -46,8 +46,8 @@ pub struct Error {
 }
 
 impl Error {
-  pub fn new(error: ErrorType, error_str: &'static str)-> Error {
-    Error { error: error, error_str: error_str }
+  pub fn new(error: ErrorType, error_str: &'static str) -> Error {
+    Error::new(error, error_str)
   }
 
   pub fn error_type_to_string(self) -> &'static str {
