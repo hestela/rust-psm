@@ -1,5 +1,5 @@
 #[allow(non_camel_case_types)]
-pub enum Error_type {
+pub enum ErrorType {
     PSM_OK = 0,
     PSM_OK_NO_PROGRESS = 1,
     PSM_PARAM_ERR = 3,
@@ -40,14 +40,14 @@ pub enum Error_type {
 }
 
 pub struct Error {
-  pub error: Error_type,
+  pub error: ErrorType,
   pub error_str: &'static str
   // TODO: add a fn for psm_error_token and remane
 }
 
 impl Error {
-  pub fn new(error: Error_type, error_str: &'static str)
-    -> Error { Error { error: error, error_str: error_str }
+  pub fn new(error: ErrorType, error_str: &'static str)-> Error {
+    Error { error: error, error_str: error_str }
   }
 
   pub fn error_type_to_string(self) -> &'static str {

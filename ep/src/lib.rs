@@ -1,7 +1,6 @@
 extern crate error;
 
-use error::{Error_type,Error};
-use std::rc::Rc;
+use error::{ErrorType,Error};
 use self::consts::*;
 use self::macros::*;
 
@@ -67,7 +66,7 @@ pub struct Epaddr <'a> {
 impl Ep {
   // TODO: change job_key to rust uuid, add psm_ep, add new
   pub fn open<'a>(job_key: u64, ep_opts: EpOpts) -> Result<(Ep, &'a Epaddr<'a>), Error> {
-    Err(Error { error: Error_type::PSM_ERROR_LAST, error_str: "send help"})
+    Err(Error { error: ErrorType::PSM_ERROR_LAST, error_str: "send help"})
   }
 
   pub fn close(ep: Ep, mode: isize, timeout: u64) -> Result<(), Error> {
