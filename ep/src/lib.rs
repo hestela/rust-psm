@@ -62,7 +62,7 @@ pub struct Epaddr <'a> {
 
 
 impl Ep {
-  // TODO: change job_key to rust uuid, add psm_ep
+  // TODO: change job_key to rust uuid, add psm_ep, add new
   pub fn open<'a>(job_key: u64, ep_opts: EpOpts) -> Result<(Ep, &'a Epaddr<'a>), Error> {
     Err(Error { error: Error_type::PSM_ERROR_LAST, error_str: "send help"})
   }
@@ -72,13 +72,12 @@ impl Ep {
   }
 
   pub fn connect<'a>(ep: Ep, epids: Box<Vec<Epid>>, epid_masks: &Vec<isize>, timeout: i64) -> Result<Box<Vec<&'a Epaddr<'a>>>, Box<Vec<Error>>> {
-    let dummy: Vec<Error> = Vec::new();
-    Err(Box::new(dummy))
+    Err(Box::new(vec!()))
   }
 }
 
 impl <'a>Epaddr <'a> {
-
+  // TODO: figure out what fields are commonly used when epaddr is constructed
 }
 /* TODO: see if we can make this into a struct so we can real getters/setters that dont have the
  * words get/set
