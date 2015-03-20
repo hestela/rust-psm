@@ -6,3 +6,6 @@ authors = ["Henry Estela <henryestela@gmail.com>"]
 
 [dependencies.error]
 path = "./../error"
+
+[dependencies]
+uuid = "0.1"

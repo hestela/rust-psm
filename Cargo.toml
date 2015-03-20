@@ -29,3 +29,6 @@ path = "./ptl_self"
 # Infinipath
 [dependencies.ipath]
 path = "./ipath"
+
+[dependencies]
+uuid = "0.1"

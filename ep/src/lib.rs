@@ -1,8 +1,10 @@
 extern crate error;
+extern crate uuid;
 
 use error::{ErrorType,Error};
 use self::consts::*;
 use self::macros::*;
+use uuid::Uuid;
 
 pub mod consts;
 #[macro_use]
@@ -22,10 +24,15 @@ pub struct EpOpts {
   num_send_buffers: isize,
   network_pkey: u64,
   port: isize,
+  ib_out_sl: isize,
   ib_service_id: u64,
-  // TODO: make psm_path_res type
-  send_descriptor: isize,
+  path_res_type: PathResType,
+  num_send_descriptors: isize,
   ep_imm_size: isize
+}
+
+enum PathResType {
+  NONE, OPP, UMAD
 }
 
 enum PtlAddr {
@@ -64,8 +71,8 @@ pub struct Epaddr <'a> {
 
 
 impl Ep {
-  // TODO: change job_key to rust uuid, add psm_ep, add new
-  pub fn open<'a>(job_key: u64, ep_opts: EpOpts) -> Result<(Ep, &'a Epaddr<'a>), Error> {
+  // TODO: add psm_ep, add new
+  pub fn open<'a>(job_key: uuid::Uuid, ep_opts: EpOpts) -> Result<(Ep, &'a Epaddr<'a>), Error> {
     Err(Error::new(ErrorType::PSM_ERROR_LAST, "send help"))
   }
 
@@ -75,6 +82,15 @@ impl Ep {
 
   pub fn connect<'a>(ep: Ep, epids: Box<Vec<Epid>>, epid_masks: &Vec<isize>, timeout: i64) -> Result<Box<Vec<&'a Epaddr<'a>>>, Box<Vec<Error>>> {
     Err(Box::new(vec!()))
+  }
+}
+
+impl EpOpts {
+  fn new() -> EpOpts {
+    EpOpts {timeout: 1, unit: 1, affinity: 1, shm_mbytes: 1,
+      num_send_buffers: 1, network_pkey: 1, port: 1,
+      ib_out_sl: 1, ib_service_id: 1, path_res_type: PathResType::UMAD,
+      num_send_descriptors: 1, ep_imm_size: 1}
   }
 }
 

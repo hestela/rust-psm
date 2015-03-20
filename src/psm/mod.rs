@@ -10,6 +10,10 @@ pub struct Version{
   minor: usize
 }
 
+enum ComponentType {
+  CORE, MQ, AM, IB
+}
+
 pub fn init(version: Version) -> Result<(), Error> {
   return Ok(())
 }
@@ -24,6 +28,3 @@ pub fn finalize() -> Result<(), Error> {
 pub fn num_ipath_units() -> Result<u32, Error> {
   return Ok(1)
 }
-
-//TODO: need a uuid mod with uuid import
-//pub fn generate_uuid()
