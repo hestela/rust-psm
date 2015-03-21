@@ -1,7 +1,7 @@
 extern crate error;
 extern crate uuid;
 
-use error::{ErrorType,Error};
+use error::Error;
 use self::consts::*;
 use self::macros::*;
 use uuid::Uuid;
@@ -73,7 +73,7 @@ pub struct Epaddr <'a> {
 impl Ep {
   // TODO: add psm_ep, add new
   pub fn open<'a>(job_key: uuid::Uuid, ep_opts: EpOpts) -> Result<(Ep, &'a Epaddr<'a>), Error> {
-    Err(Error::new(ErrorType::PSM_ERROR_LAST, "send help"))
+    Err(Error::PSM_ERROR_LAST)
   }
 
   pub fn close(ep: Ep, mode: isize, timeout: u64) -> Result<(), Error> {

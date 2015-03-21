@@ -1,5 +1,5 @@
 #[allow(non_camel_case_types)]
-pub enum ErrorType {
+pub enum Error {
     PSM_OK = 0,
     PSM_OK_NO_PROGRESS = 1,
     PSM_PARAM_ERR = 3,
@@ -36,21 +36,10 @@ pub enum ErrorType {
     PSM_MQ_NO_COMPLETIONS = 60,
     PSM_MQ_TRUNCATION = 61,
     PSM_AM_INVALID_REPLY = 70,
-    PSM_ERROR_LAST = 80
+    PSM_ERROR_LAST = 80,
+    AlreadyInitialized
 }
 
-pub struct Error {
-  pub error: ErrorType,
-  pub error_str: &'static str
-  // TODO: add a fn for psm_error_token and remane
-}
-
-impl Error {
-  pub fn new(error: ErrorType, error_str: &'static str) -> Error {
-    Error { error: error, error_str: error_str }
-  }
-
-  pub fn error_type_to_string(self) -> &'static str {
-    "NONE()"
-  }
+pub fn error_to_string(error: Error) -> &'static str {
+  "NONE()"
 }
