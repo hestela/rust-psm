@@ -5,7 +5,7 @@ version = "0.0.1"
 authors = ["Henry Estela <henryestela@gmail.com>"]
 
 [lib]
-name = "rust-psm"
+name = "rust_psm"
 
 # PSM Endpoint
 [dependencies.ep]

@@ -16,6 +16,7 @@ pub struct Ep {
   // TOOD: lots of things to add
   epid: Epid
 }
+
 pub struct EpOpts {
   timeout: u64,
   unit: isize,
@@ -32,7 +33,9 @@ pub struct EpOpts {
 }
 
 enum PathResType {
-  NONE, OPP, UMAD
+  NONE,
+  OPP,
+  UMAD
 }
 
 enum PtlAddr {
@@ -72,25 +75,27 @@ pub struct Epaddr <'a> {
 
 impl Ep {
   // TODO: add psm_ep, add new
-  pub fn open<'a>(job_key: uuid::Uuid, ep_opts: EpOpts) -> Result<(Ep, &'a Epaddr<'a>), Error> {
-    Err(Error::PSM_ERROR_LAST)
+  pub fn open<'a>(job_key: Uuid, ep_opts: EpOpts) -> Result<(Ep, &'a Epaddr<'a>), Error> {
+    return Err(Error::UnknownError)
   }
 
-  pub fn close(ep: Ep, mode: isize, timeout: u64) -> Result<(), Error> {
-    Ok(())
+  pub fn close(ep: Ep, mode: isize, timeout: u64) -> Error {
+    return Error::UnknownError
   }
 
   pub fn connect<'a>(ep: Ep, epids: Box<Vec<Epid>>, epid_masks: &Vec<isize>, timeout: i64) -> Result<Box<Vec<&'a Epaddr<'a>>>, Box<Vec<Error>>> {
-    Err(Box::new(vec!()))
+    return Err(Box::new(vec!()))
   }
 }
 
 impl EpOpts {
   fn new() -> EpOpts {
-    EpOpts {timeout: 1, unit: 1, affinity: 1, shm_mbytes: 1,
+    EpOpts {
+      timeout: 1, unit: 1, affinity: 1, shm_mbytes: 1,
       num_send_buffers: 1, network_pkey: 1, port: 1,
       ib_out_sl: 1, ib_service_id: 1, path_res_type: PathResType::UMAD,
-      num_send_descriptors: 1, ep_imm_size: 1}
+      num_send_descriptors: 1, ep_imm_size: 1
+    }
   }
 }
 
