@@ -31,6 +31,10 @@ impl Fd {
       ret @ _ => Ok(ret)
     }
   }
+
+  pub fn write<T: ?Sized>(&self, buf: T) -> Result<c_int, Error> {
+    unimplemented!()
+  }
 }
 
 impl AsRawFd for Fd {

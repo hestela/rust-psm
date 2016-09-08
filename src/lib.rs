@@ -1,5 +1,6 @@
 #![crate_type="lib"]
 #![crate_name="rust_psm"]
+#![feature(untagged_unions)]
 
 extern crate libc;
 extern crate uuid;

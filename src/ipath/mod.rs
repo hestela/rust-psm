@@ -12,23 +12,27 @@ const TF_NFLOWS: usize = 32;
 // TODO: most of these members have the most cryptic names
 // device and control_data get passed to the driver, must be in C format
 #[repr(C)]
-struct device {
+// NOTE: this is _ipath_dev
+pub struct device {
   spd_fd: i32,
   spd_type: i32,
-  // XXX: These next two are volatile in C
+  // XXX: These next two are volatile in C, see if we can use rust refs
   spd_uregbase: *mut u64,
   spd_piobase: *mut u64,
   pad: [u64; 4]
 }
 
 #[repr(C)]
-struct control_data {
+// TODO: see if we can use rust references instead of the i32
+// NOTE: this is _ipath_ctrl
+pub struct control_data {
   spc_dev: device,
   // XXX: most of these are stored as little endian 32s but should be fine
   regs: [i32; TF_NFLOWS << 1],
   tidflow_wmb_location: i32,
   sendbuf_status: u64,
   lasterr: isize,
+  // XXX: these pointers are volatile, prob should be u32/64
   rcv_tail: *mut i32,
   rcv_hdr_head: *mut i32,
   rcv_egr_head: *mut i32,
@@ -40,9 +44,10 @@ struct control_data {
 }
 
 #[repr(C)]
+#[derive(Clone, Debug)]
 // FIXME: allined by 8
 // Size of struct is 32 bytes, divisable by 8
-struct user_info {
+pub struct user_info {
   psm_lib_version: u32,
   scif_node_id: u32,
   base_info_size: u32,
@@ -54,9 +59,10 @@ struct user_info {
 }
 
 #[repr(C)]
+#[derive(Clone, Debug)]
 // FIXME: allined by 8
 // Size of struct is 176 bytes, divisable by 8
-struct base_info {
+pub struct base_info {
   hw_version: u32,
   sw_version: u32,
   context: u16,
@@ -97,123 +103,65 @@ struct base_info {
 #[repr(C)]
 // TODO: find right sizes
 pub struct ctxt_info {
-    num_active: u32,
-    unit: u32,
-    port: u32,
-    context: u32,
-    subcontext: u32,
-    num_contexts: u32,
-    num_subcontexts: u32,
-    rec_cpu: u32,
+    num_active: u16,
+    unit: u16,
+    port: u16,
+    context: u16,
+    subcontext: u16,
+    num_contexts: u16,
+    num_subcontexts: u16,
+    rec_cpu: u16,
+}
+
+/// ipath::cmd types for qib driver
+const CMD_CTXT_INFO: u32 = 16;
+const CMD_ASSIGN_CONTEXT: u32 = 23;
+
+#[repr(C)]
+struct cmd {
+  cmd_type: u32,
+  cmd_data: cmd_data
 }
 
 #[repr(C)]
-pub struct driver_cmd {
-    cmd_type: u32,
-    cmd: cmd_union,
-}
-
-// XXX: bindgen did some magic to get the structs into this union for cmd
-#[repr(C)]
-pub struct cmd_union {
-    pub _bindgen_data_: [u64; 4usize]
-}
-// TODO: find right sizes
-// TODO: remove extra structs/types
-// TODO: keep largest struct to make union compatible
-impl cmd_union {
-    pub unsafe fn mem_info(&mut self) -> *mut mem_info {
-        let raw: *mut u8 = ::std::mem::transmute(&self._bindgen_data_);
-        ::std::mem::transmute(raw.offset(0))
-    }
-    pub unsafe fn mic_info(&mut self) -> *mut mic_info {
-        let raw: *mut u8 = ::std::mem::transmute(&self._bindgen_data_);
-        ::std::mem::transmute(raw.offset(0))
-    }
-    pub unsafe fn tid_info(&mut self) -> *mut tid_info {
-        let raw: *mut u8 = ::std::mem::transmute(&self._bindgen_data_);
-        ::std::mem::transmute(raw.offset(0))
-    }
-    pub unsafe fn user_info(&mut self) -> *mut user_info {
-        let raw: *mut u8 = ::std::mem::transmute(&self._bindgen_data_);
-        ::std::mem::transmute(raw.offset(0))
-    }
-    pub unsafe fn sdma_cntr(&mut self) -> *mut u32 {
-        let raw: *mut u8 = ::std::mem::transmute(&self._bindgen_data_);
-        ::std::mem::transmute(raw.offset(0))
-    }
-    pub unsafe fn ctxt_info(&mut self) -> *mut u32 {
-        let raw: *mut u8 = ::std::mem::transmute(&self._bindgen_data_);
-        ::std::mem::transmute(raw.offset(0))
-    }
-    pub unsafe fn recv_ctrl(&mut self) -> *mut u32 {
-        let raw: *mut u8 = ::std::mem::transmute(&self._bindgen_data_);
-        ::std::mem::transmute(raw.offset(0))
-    }
-    pub unsafe fn armlaunch_ctrl(&mut self) -> *mut u32 {
-        let raw: *mut u8 = ::std::mem::transmute(&self._bindgen_data_);
-        ::std::mem::transmute(raw.offset(0))
-    }
-    pub unsafe fn part_key(&mut self) -> *mut u32 {
-        let raw: *mut u8 = ::std::mem::transmute(&self._bindgen_data_);
-        ::std::mem::transmute(raw.offset(0))
-    }
-    pub unsafe fn slave_mask_addr(&mut self) -> *mut u32 {
-        let raw: *mut u8 = ::std::mem::transmute(&self._bindgen_data_);
-        ::std::mem::transmute(raw.offset(0))
-    }
-    pub unsafe fn poll_type(&mut self) -> *mut u32 {
-        let raw: *mut u8 = ::std::mem::transmute(&self._bindgen_data_);
-        ::std::mem::transmute(raw.offset(0))
-    }
-    pub unsafe fn ctxt_bp(&mut self) -> *mut u32 {
-        let raw: *mut u8 = ::std::mem::transmute(&self._bindgen_data_);
-        ::std::mem::transmute(raw.offset(0))
-    }
-    pub unsafe fn event_mask(&mut self) -> *mut u32 {
-        let raw: *mut u8 = ::std::mem::transmute(&self._bindgen_data_);
-        ::std::mem::transmute(raw.offset(0))
-    }
+union cmd_data {
+  tid_info: tid_info,
+  user_info: user_info,
+  sdma_counter: u64,
+  ctxt_info: u32,
+  armlaunch_ctrl: u32,
+  part_key: u16,
+  slave_mask_addr: u64,
+  poll_type: u16,
+  ctxt_bp: u8,
+  event_mask: u64
 }
 
 #[repr(C)]
-pub struct pbc {
-    pub _bindgen_data_: [u32; 3usize]
-}
-impl pbc {
-    pub unsafe fn qword(&mut self) -> *mut ::std::os::raw::c_int {
-        let raw: *mut u8 = ::std::mem::transmute(&self._bindgen_data_);
-        ::std::mem::transmute(raw.offset(0))
-    }
-    pub unsafe fn dword(&mut self) -> *mut ::std::os::raw::c_int {
-        let raw: *mut u8 = ::std::mem::transmute(&self._bindgen_data_);
-        ::std::mem::transmute(raw.offset(0))
-    }
-    pub unsafe fn length(&mut self) -> *mut ::std::os::raw::c_int {
-        let raw: *mut u8 = ::std::mem::transmute(&self._bindgen_data_);
-        ::std::mem::transmute(raw.offset(0))
-    }
-    pub unsafe fn fill1(&mut self) -> *mut ::std::os::raw::c_int {
-        let raw: *mut u8 = ::std::mem::transmute(&self._bindgen_data_);
-        ::std::mem::transmute(raw.offset(4))
-    }
-    pub unsafe fn pbcflags(&mut self) -> *mut ::std::os::raw::c_int {
-        let raw: *mut u8 = ::std::mem::transmute(&self._bindgen_data_);
-        ::std::mem::transmute(raw.offset(8))
-    }
+pub struct tid_info {
+  count: u32,
+  pad: u32,
+  virt_addr: u64,
+  list_addr: u64,
+  map_addr: u64
 }
 
+// TODO: determine what should be pub
 #[repr(C)]
 pub struct header {
-    pub ver_context_tid_offset: ::std::os::raw::c_int,
-    pub chksum: ::std::os::raw::c_int,
-    pub pkt_flags: ::std::os::raw::c_int
+    // TODO: this is a compacted field, accessed by shift/mask
+    pub ver_context_tid_offset: u32,
+    pub chksum: u16,
+    // TODO: this is a compacted field, accessed by shift/mask
+    pub pkt_flags: u16
 }
 
+// TODO: seceure r/w access to these with big endian fns
+// IBTA requires LRH and BTH to be in big endian
 #[repr(C)]
-pub struct message_header {
-    pub lrh: [::std::os::raw::c_int; 4usize],
-    pub bth: [::std::os::raw::c_int; 3usize],
-    pub iph: header,
-    pub sub_opcode: ::std::os::raw::c_int
+pub struct ibta_header {
+  lrh: [u16; 4],
+  bth: [u16; 3],
+  ipath_header: header,
+  sub_opcode: u8
 }
