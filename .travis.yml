@@ -1,4 +1,6 @@
 language: rust
+rust:
+  - nightly
 env:
   global:
     - LD_LIBRARY_PATH: /usr/local/lib
