@@ -3,10 +3,11 @@
 extern crate libc;
 
 use std::ffi::CString;
-use libc::c_int;
+use libc::{c_int, size_t, c_void};
 use std::os::unix::io::{RawFd, AsRawFd};
 use std::ops::Drop;
 use std::io::Error;
+use std::mem::size_of;
 
 pub struct Fd(RawFd);
 
@@ -32,8 +33,11 @@ impl Fd {
     }
   }
 
-  pub fn write<T: ?Sized>(&self, buf: T) -> Result<c_int, Error> {
-    unimplemented!()
+  pub fn write<T>(&self, t: T) -> Result<size_t, Error> where T: Sized {
+    match unsafe { libc::write(self.0, &t as *const T as *const c_void, size_of::<T>() as size_t) } {
+      -1 => Err(Error::last_os_error()),
+      ret @ _ => Ok(ret as size_t)
+    }
   }
 }
 

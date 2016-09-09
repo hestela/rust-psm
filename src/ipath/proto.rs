@@ -2,6 +2,7 @@ use fileops::Fd;
 use ipath;
 use ipath::{user_info, base_info, control_data, cmd, cmd_data};
 use std::mem;
+use std::error::Error;
 
 // TODO: to borrow or to not to borrow.
 // For the sake of brevity, assume the latest driver/device is in use
@@ -18,6 +19,12 @@ pub fn userint(fd: Fd, u_info: user_info, b_info: base_info) ->
     // XXX: safety is kill
     driver_cmd.cmd_data.user_info.base_info_addr =
       &mut b_info_clone as *mut base_info as u64;
+
+    let bytes = fd.write(&driver_cmd);
+    match bytes {
+      Ok(res) => println!("Got {} bytes written!", res),
+      Err(err) => println!("Got an error {}", err.description().to_owned())
+    }
   }
   unimplemented!();
 }
