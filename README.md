@@ -1,5 +1,6 @@
 # rust-psm
-[![Build Status](https://travis-ci.org/hestela/rust-psm.svg?branch=master)](https://travis-ci.org/hestela/rust-psm)  
+[![Build Status](https://travis-ci.org/hestela/rust-psm.svg?branch=master)](https://travis-ci.org/hestela/rust-psm)
+[![Stories in Ready](https://badge.waffle.io/hestela/rust-psm.png?label=ready&title=Ready)](http://waffle.io/hestela/rust-psm)
 
 A Rust implementation of Intel's Performance Scaled Messaging (PSM) library.
 
